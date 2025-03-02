@@ -184,6 +184,9 @@ class _InvoicesPageState extends State<InvoicesPage> {
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setDialogState) {
+            Map<String, dynamic>?
+            selectedItem; // Track selected item before adding
+
             return AlertDialog(
               title: Text('Create Invoice'),
               content: Column(
@@ -247,7 +250,7 @@ class _InvoicesPageState extends State<InvoicesPage> {
                   Row(
                     children: [
                       Expanded(
-                        child: DropdownButtonFormField(
+                        child: DropdownButtonFormField<Map<String, dynamic>>(
                           items:
                               items.map<DropdownMenuItem<Map<String, dynamic>>>(
                                 (item) {
@@ -258,14 +261,7 @@ class _InvoicesPageState extends State<InvoicesPage> {
                                 },
                               ).toList(),
                           onChanged: (value) {
-                            if (value != null &&
-                                !selectedItems.contains(value)) {
-                              setDialogState(() {
-                                selectedItems.add(value);
-                                itemQuantityControllers[value['id']] =
-                                    TextEditingController();
-                              });
-                            }
+                            selectedItem = value; // Store selected item
                           },
                           decoration: InputDecoration(labelText: 'Select Item'),
                         ),
@@ -273,10 +269,13 @@ class _InvoicesPageState extends State<InvoicesPage> {
                       IconButton(
                         icon: Icon(Icons.add_circle, color: Colors.green),
                         onPressed: () {
-                          setDialogState(() {
-                            // Add an empty item selection field
-                            selectedItems.add({});
-                          });
+                          if (selectedItem != null) {
+                            setDialogState(() {
+                              selectedItems.add(selectedItem!);
+                              itemQuantityControllers[selectedItem!['id']] =
+                                  TextEditingController();
+                            });
+                          }
                         },
                       ),
                     ],
