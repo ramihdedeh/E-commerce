@@ -3,7 +3,7 @@ package apliman.E_commerce.models;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
@@ -26,6 +26,7 @@ public class InvoiceItem {
 
     @ManyToOne
     @JoinColumn(name = "item_id", nullable = false)
+    @JsonIgnoreProperties("invoiceItems")
     // Many invoice items belong to one item
     // "item_id" is the foreign key referencing Item's ID
     private Item item;

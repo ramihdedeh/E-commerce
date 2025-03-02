@@ -24,6 +24,7 @@ public class Item {
 
     
     @OneToMany(mappedBy = "item")
+    @JsonIgnore
     // One item can appear in multiple invoices
     // "mappedBy = item" means the "item" field in InvoiceItem owns this relation
     private List<InvoiceItem> invoiceItems;

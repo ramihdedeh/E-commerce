@@ -2,11 +2,8 @@ package apliman.E_commerce.models;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
 import org.hibernate.annotations.CreationTimestamp;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import jakarta.persistence.*;
 import lombok.Data;
 

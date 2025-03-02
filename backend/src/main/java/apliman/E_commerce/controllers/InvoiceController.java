@@ -1,6 +1,7 @@
 package apliman.E_commerce.controllers;
 
 import apliman.E_commerce.DTO.InvoiceDTO;
+import apliman.E_commerce.DTO.InvoiceItemDTO;
 import apliman.E_commerce.requests.InvoiceRequest;
 import apliman.E_commerce.services.InvoiceService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,13 @@ public class InvoiceController {
     public ResponseEntity<List<InvoiceDTO>> getInvoicesByCustomerId(@PathVariable Long customerId) {
         return ResponseEntity.ok(invoiceService.getInvoicesByCustomerId(customerId));
     }
-    
+
+    //Get Items of an Invoice
+    @GetMapping("/{invoiceId}/items")
+    public ResponseEntity<List<InvoiceItemDTO>> getInvoiceItems(@PathVariable Long invoiceId) {
+    return ResponseEntity.ok(invoiceService.getInvoiceItems(invoiceId));
+}
+
 
     // Get all invoices by customer name
     @GetMapping("/customer")
