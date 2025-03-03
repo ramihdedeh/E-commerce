@@ -9,24 +9,26 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(
-            'Apliman',
-            style: TextStyle(
-              color: Colors.blue,
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
+          child: Image.asset(
+            'assets/aplimanLogo.png', // Ensure this image is placed in the assets folder
+            height: 50,
           ),
         ),
         backgroundColor: Colors.white,
-        elevation: 0, // Removes shadow under the AppBar
+        elevation: 0,
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(height: 20), // Space above buttons
+            SizedBox(height: 20),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF03137D),
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
               onPressed:
                   () => Navigator.push(
                     context,
@@ -34,8 +36,14 @@ class HomePage extends StatelessWidget {
                   ),
               child: Text('Manage Customers'),
             ),
-            SizedBox(height: 15), // Space between buttons
+            SizedBox(height: 15),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF03137D),
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
               onPressed:
                   () => Navigator.push(
                     context,
@@ -43,8 +51,14 @@ class HomePage extends StatelessWidget {
                   ),
               child: Text('Manage Items'),
             ),
-            SizedBox(height: 15), // Space between buttons
+            SizedBox(height: 15),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF03137D),
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
               onPressed:
                   () => Navigator.push(
                     context,

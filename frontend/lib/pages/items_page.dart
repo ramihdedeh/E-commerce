@@ -155,80 +155,84 @@ class _ItemsPageState extends State<ItemsPage> {
               padding: EdgeInsets.all(8.0),
               child: Text(errorMessage, style: TextStyle(color: Colors.red)),
             ),
-          ElevatedButton(
-            onPressed: fetchItems,
-            child: Text('Display All Items'),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: page > 0 ? previousPage : null,
-                child: Text('Previous Page'),
-              ),
-              SizedBox(width: 20),
-              ElevatedButton(
-                onPressed: page < totalPages - 1 ? nextPage : null,
-                child: Text('Next Page'),
-              ),
-            ],
-          ),
-          ElevatedButton(
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder:
-                    (context) => AlertDialog(
-                      title: Text('Add New Item'),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          TextField(
-                            controller: addNameController,
-                            decoration: InputDecoration(labelText: 'Item Name'),
-                          ),
-                          TextField(
-                            controller: addDescriptionController,
-                            decoration: InputDecoration(
-                              labelText: 'Description',
+
+          // 🔹 Top Buttons (Separated)
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+            child: Column(
+              children: [
+                ElevatedButton(
+                  onPressed: fetchItems,
+                  child: Text('Display All Items'),
+                ),
+                SizedBox(height: 15), // Space between buttons
+                ElevatedButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder:
+                          (context) => AlertDialog(
+                            title: Text('Add New Item'),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                TextField(
+                                  controller: addNameController,
+                                  decoration: InputDecoration(
+                                    labelText: 'Item Name',
+                                  ),
+                                ),
+                                TextField(
+                                  controller: addDescriptionController,
+                                  decoration: InputDecoration(
+                                    labelText: 'Description',
+                                  ),
+                                ),
+                                TextField(
+                                  controller: addPriceController,
+                                  decoration: InputDecoration(
+                                    labelText: 'Price',
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                ),
+                                TextField(
+                                  controller: addStockController,
+                                  decoration: InputDecoration(
+                                    labelText: 'Stock',
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                ),
+                              ],
                             ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  addItem(
+                                    addNameController.text,
+                                    addDescriptionController.text,
+                                    double.parse(addPriceController.text),
+                                    int.parse(addStockController.text),
+                                  );
+                                  addNameController.clear();
+                                  addDescriptionController.clear();
+                                  addPriceController.clear();
+                                  addStockController.clear();
+                                  Navigator.pop(context);
+                                },
+                                child: Text('Add'),
+                              ),
+                            ],
                           ),
-                          TextField(
-                            controller: addPriceController,
-                            decoration: InputDecoration(labelText: 'Price'),
-                            keyboardType: TextInputType.number,
-                          ),
-                          TextField(
-                            controller: addStockController,
-                            decoration: InputDecoration(labelText: 'Stock'),
-                            keyboardType: TextInputType.number,
-                          ),
-                        ],
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            addItem(
-                              addNameController.text,
-                              addDescriptionController.text,
-                              double.parse(addPriceController.text),
-                              int.parse(addStockController.text),
-                            );
-                            addNameController.clear();
-                            addDescriptionController.clear();
-                            addPriceController.clear();
-                            addStockController.clear();
-                            Navigator.pop(context);
-                          },
-                          child: Text('Add'),
-                        ),
-                      ],
-                    ),
-              );
-            },
-            child: Text('Add Item'),
+                    );
+                  },
+                  child: Text('Add Item'),
+                ),
+              ],
+            ),
           ),
 
+          SizedBox(height: 10), // Space before the table
+          // 🔹 Table of Items
           Expanded(
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -345,6 +349,28 @@ class _ItemsPageState extends State<ItemsPage> {
               ),
             ),
           ),
+
+          SizedBox(height: 20), // Space before pagination buttons
+          // 🔹 Pagination Buttons - Left and Right Alignment
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: Row(
+              mainAxisAlignment:
+                  MainAxisAlignment
+                      .spaceBetween, // Align buttons at opposite ends
+              children: [
+                ElevatedButton(
+                  onPressed: page > 0 ? previousPage : null,
+                  child: Text('Previous Page'),
+                ),
+                ElevatedButton(
+                  onPressed: page < totalPages - 1 ? nextPage : null,
+                  child: Text('Next Page'),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 20), // Space at the bottom
         ],
       ),
     );

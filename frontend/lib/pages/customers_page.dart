@@ -114,6 +114,7 @@ class _CustomersPageState extends State<CustomersPage> {
             onPressed: fetchCustomers,
             child: Text('Display All Customers'),
           ),
+          SizedBox(height: 15),
           ElevatedButton(
             onPressed: () {
               showDialog(
@@ -140,6 +141,7 @@ class _CustomersPageState extends State<CustomersPage> {
             },
             child: Text('Add Customer'),
           ),
+          SizedBox(height: 20),
           Expanded(
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
