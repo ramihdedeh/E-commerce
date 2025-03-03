@@ -42,12 +42,6 @@ public class InvoiceController {
     public ResponseEntity<InvoiceDTO> createInvoice(@RequestBody InvoiceRequest request) {
         return ResponseEntity.ok(invoiceService.createInvoice(request));
     }
-    @PostMapping("/purchase")
-    public ResponseEntity<InvoiceDTO> purchaseItem(
-        @RequestParam Long customerId,
-        @RequestParam Long itemId,
-        @RequestParam int quantity) {
-    return ResponseEntity.ok(invoiceService.purchaseItem(customerId, itemId, quantity));
-}
+ 
 
 }

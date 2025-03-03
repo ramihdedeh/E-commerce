@@ -1,30 +1,13 @@
 package apliman.E_commerce.DTO;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
+@Data  // Generates Getters, Setters, toString(), equals(), and hashCode()
+@NoArgsConstructor  // Generates a no-args constructor
+@AllArgsConstructor // Generates a constructor with all fields
 public class CustomerDTO {
     private Long id;
     private String name;
-
-    public CustomerDTO() {}
-
-    public CustomerDTO(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }

@@ -14,7 +14,7 @@ import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
-@CrossOrigin(origins = "*")  // ✅ This allows all frontend origins
+@CrossOrigin(origins = "*")  // This allows all frontend origins
 @RestController
 @RequestMapping("/api/customers")
 @RequiredArgsConstructor
