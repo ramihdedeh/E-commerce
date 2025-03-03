@@ -104,17 +104,23 @@ class _CustomersPageState extends State<CustomersPage> {
     return Scaffold(
       appBar: AppBar(title: Text('Customers')),
       body: Column(
+        mainAxisAlignment:
+            MainAxisAlignment.start, // Align elements towards the top
+        crossAxisAlignment: CrossAxisAlignment.center, // Center horizontally
         children: [
           if (errorMessage.isNotEmpty)
             Padding(
               padding: EdgeInsets.all(8.0),
               child: Text(errorMessage, style: TextStyle(color: Colors.red)),
             ),
+
+          // Buttons
           ElevatedButton(
             onPressed: fetchCustomers,
             child: Text('Display All Customers'),
           ),
           SizedBox(height: 15),
+
           ElevatedButton(
             onPressed: () {
               showDialog(
@@ -141,68 +147,75 @@ class _CustomersPageState extends State<CustomersPage> {
             },
             child: Text('Add Customer'),
           ),
-          SizedBox(height: 20),
+
+          SizedBox(height: 20), // Add space before DataTable
+          // Centering & Adjusting the Table Layout
           Expanded(
             child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                columns: [
-                  DataColumn(label: Text('ID')),
-                  DataColumn(label: Text('Name')),
-                  DataColumn(label: Text('Actions')),
-                ],
-                rows:
-                    customers.map((customer) {
-                      return DataRow(
-                        cells: [
-                          DataCell(Text(customer['id'].toString())),
-                          DataCell(Text(customer['name'])),
-                          DataCell(
-                            Row(
-                              children: [
-                                IconButton(
-                                  icon: Icon(Icons.edit, color: Colors.blue),
-                                  onPressed: () {
-                                    updateNameController.text =
-                                        customer['name'];
-                                    showDialog(
-                                      context: context,
-                                      builder:
-                                          (context) => AlertDialog(
-                                            title: Text('Update Customer'),
-                                            content: TextField(
-                                              controller: updateNameController,
-                                              decoration: InputDecoration(
-                                                labelText: 'New Name',
+              scrollDirection: Axis.vertical,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: DataTable(
+                  columns: [
+                    DataColumn(label: Text('ID')),
+                    DataColumn(label: Text('Name')),
+                    DataColumn(label: Text('Actions')),
+                  ],
+                  rows:
+                      customers.map((customer) {
+                        return DataRow(
+                          cells: [
+                            DataCell(Text(customer['id'].toString())),
+                            DataCell(Text(customer['name'])),
+                            DataCell(
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  IconButton(
+                                    icon: Icon(Icons.edit, color: Colors.blue),
+                                    onPressed: () {
+                                      updateNameController.text =
+                                          customer['name'];
+                                      showDialog(
+                                        context: context,
+                                        builder:
+                                            (context) => AlertDialog(
+                                              title: Text('Update Customer'),
+                                              content: TextField(
+                                                controller:
+                                                    updateNameController,
+                                                decoration: InputDecoration(
+                                                  labelText: 'New Name',
+                                                ),
                                               ),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    updateCustomer(
+                                                      customer['id'],
+                                                      updateNameController.text,
+                                                    );
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text('Update'),
+                                                ),
+                                              ],
                                             ),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () {
-                                                  updateCustomer(
-                                                    customer['id'],
-                                                    updateNameController.text,
-                                                  );
-                                                  Navigator.pop(context);
-                                                },
-                                                child: Text('Update'),
-                                              ),
-                                            ],
-                                          ),
-                                    );
-                                  },
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.delete, color: Colors.red),
-                                  onPressed:
-                                      () => deleteCustomer(customer['id']),
-                                ),
-                              ],
+                                      );
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.delete, color: Colors.red),
+                                    onPressed:
+                                        () => deleteCustomer(customer['id']),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      );
-                    }).toList(),
+                          ],
+                        );
+                      }).toList(),
+                ),
               ),
             ),
           ),

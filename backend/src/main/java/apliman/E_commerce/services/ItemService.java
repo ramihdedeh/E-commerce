@@ -33,7 +33,7 @@ public class ItemService {
     public Page<Item> getAllItems(int page, int size) {
         return itemRepository.findByDeletedFalse(PageRequest.of(page, size));
     }
-    // Search items by name (pagination supported)
+    // Search items by name with pagination
     public Page<Item> searchItemsByName(String name, int page, int size) {
         return itemRepository.findByNameContainingIgnoreCase(name, PageRequest.of(page, size));
     }

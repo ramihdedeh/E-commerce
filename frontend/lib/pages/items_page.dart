@@ -21,6 +21,7 @@ class _ItemsPageState extends State<ItemsPage> {
   TextEditingController addDescriptionController = TextEditingController();
   TextEditingController addPriceController = TextEditingController();
   TextEditingController addStockController = TextEditingController();
+  TextEditingController searchController = TextEditingController();
 
   Future<void> fetchItems() async {
     try {
@@ -47,6 +48,35 @@ class _ItemsPageState extends State<ItemsPage> {
         }
       } else {
         setState(() => errorMessage = 'Failed to load items.');
+      }
+    } catch (e) {
+      setState(() => errorMessage = 'Error: $e');
+    }
+  }
+
+  Future<void> fetchItemByName(String name) async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+          'http://localhost:8080/api/items/search?name=$name&page=0&size=10',
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        var jsonResponse = json.decode(response.body);
+
+        if (jsonResponse is Map<String, dynamic> &&
+            jsonResponse.containsKey("content")) {
+          setState(() {
+            items =
+                jsonResponse["content"]; // Correctly setting items as a list
+            errorMessage = items.isEmpty ? 'No items found.' : '';
+          });
+        } else {
+          setState(() => errorMessage = 'Invalid response format.');
+        }
+      } else {
+        setState(() => errorMessage = 'Failed to fetch item.');
       }
     } catch (e) {
       setState(() => errorMessage = 'Error: $e');
@@ -148,93 +178,117 @@ class _ItemsPageState extends State<ItemsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Items')),
-      body: Column(
-        children: [
-          if (errorMessage.isNotEmpty)
+      body: SingleChildScrollView(
+        // 🔹 Ensures page is scrollable
+        child: Column(
+          children: [
+            if (errorMessage.isNotEmpty)
+              Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(errorMessage, style: TextStyle(color: Colors.red)),
+              ),
+
+            // 🔹 Search Bar for Searching Items
             Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(errorMessage, style: TextStyle(color: Colors.red)),
+              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: searchController,
+                      decoration: InputDecoration(labelText: 'Search by Name'),
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.search),
+                    onPressed: () {
+                      if (searchController.text.isNotEmpty) {
+                        fetchItemByName(searchController.text);
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
 
-          // 🔹 Top Buttons (Separated)
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-            child: Column(
-              children: [
-                ElevatedButton(
-                  onPressed: fetchItems,
-                  child: Text('Display All Items'),
-                ),
-                SizedBox(height: 15), // Space between buttons
-                ElevatedButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder:
-                          (context) => AlertDialog(
-                            title: Text('Add New Item'),
-                            content: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                TextField(
-                                  controller: addNameController,
-                                  decoration: InputDecoration(
-                                    labelText: 'Item Name',
+            // 🔹 Buttons (Display All Items & Add Item)
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+              child: Column(
+                children: [
+                  ElevatedButton(
+                    onPressed: fetchItems, // Reset to display all items
+                    child: Text('Display All Items'),
+                  ),
+                  SizedBox(height: 15),
+                  ElevatedButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder:
+                            (context) => AlertDialog(
+                              title: Text('Add New Item'),
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  TextField(
+                                    controller: addNameController,
+                                    decoration: InputDecoration(
+                                      labelText: 'Item Name',
+                                    ),
                                   ),
-                                ),
-                                TextField(
-                                  controller: addDescriptionController,
-                                  decoration: InputDecoration(
-                                    labelText: 'Description',
+                                  TextField(
+                                    controller: addDescriptionController,
+                                    decoration: InputDecoration(
+                                      labelText: 'Description',
+                                    ),
                                   ),
-                                ),
-                                TextField(
-                                  controller: addPriceController,
-                                  decoration: InputDecoration(
-                                    labelText: 'Price',
+                                  TextField(
+                                    controller: addPriceController,
+                                    decoration: InputDecoration(
+                                      labelText: 'Price',
+                                    ),
+                                    keyboardType: TextInputType.number,
                                   ),
-                                  keyboardType: TextInputType.number,
-                                ),
-                                TextField(
-                                  controller: addStockController,
-                                  decoration: InputDecoration(
-                                    labelText: 'Stock',
+                                  TextField(
+                                    controller: addStockController,
+                                    decoration: InputDecoration(
+                                      labelText: 'Stock',
+                                    ),
+                                    keyboardType: TextInputType.number,
                                   ),
-                                  keyboardType: TextInputType.number,
+                                ],
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    addItem(
+                                      addNameController.text,
+                                      addDescriptionController.text,
+                                      double.parse(addPriceController.text),
+                                      int.parse(addStockController.text),
+                                    );
+                                    addNameController.clear();
+                                    addDescriptionController.clear();
+                                    addPriceController.clear();
+                                    addStockController.clear();
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text('Add'),
                                 ),
                               ],
                             ),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  addItem(
-                                    addNameController.text,
-                                    addDescriptionController.text,
-                                    double.parse(addPriceController.text),
-                                    int.parse(addStockController.text),
-                                  );
-                                  addNameController.clear();
-                                  addDescriptionController.clear();
-                                  addPriceController.clear();
-                                  addStockController.clear();
-                                  Navigator.pop(context);
-                                },
-                                child: Text('Add'),
-                              ),
-                            ],
-                          ),
-                    );
-                  },
-                  child: Text('Add Item'),
-                ),
-              ],
+                      );
+                    },
+                    child: Text('Add Item'),
+                  ),
+                ],
+              ),
             ),
-          ),
 
-          SizedBox(height: 10), // Space before the table
-          // 🔹 Table of Items
-          Expanded(
-            child: SingleChildScrollView(
+            SizedBox(height: 10), // Space before table
+            // 🔹 Scrollable Data Table
+            SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: DataTable(
                 columns: [
@@ -348,30 +402,28 @@ class _ItemsPageState extends State<ItemsPage> {
                     }).toList(),
               ),
             ),
-          ),
 
-          SizedBox(height: 20), // Space before pagination buttons
-          // 🔹 Pagination Buttons - Left and Right Alignment
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
-              mainAxisAlignment:
-                  MainAxisAlignment
-                      .spaceBetween, // Align buttons at opposite ends
-              children: [
-                ElevatedButton(
-                  onPressed: page > 0 ? previousPage : null,
-                  child: Text('Previous Page'),
-                ),
-                ElevatedButton(
-                  onPressed: page < totalPages - 1 ? nextPage : null,
-                  child: Text('Next Page'),
-                ),
-              ],
+            SizedBox(height: 20), // Space before pagination buttons
+            // 🔹 Pagination Buttons
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                    onPressed: page > 0 ? previousPage : null,
+                    child: Text('Previous Page'),
+                  ),
+                  ElevatedButton(
+                    onPressed: page < totalPages - 1 ? nextPage : null,
+                    child: Text('Next Page'),
+                  ),
+                ],
+              ),
             ),
-          ),
-          SizedBox(height: 20), // Space at the bottom
-        ],
+            SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }
