@@ -1,0 +1,11 @@
+.git/
+.idea
+.dart_tool
+build/
+linux/
+macos/
+windows/
+test/
+node_modules/
+.flutter-plugins
+.flutter-plugins-dependencies

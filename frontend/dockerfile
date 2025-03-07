@@ -1,0 +1,26 @@
+# Use the official Flutter Docker image (no need to manually install Flutter)
+FROM cirrusci/flutter:stable AS build
+
+# Set working directory
+WORKDIR /app
+
+# Copy project files
+COPY . .
+
+RUN sh -c "apk update && apk add bash"
+
+
+# Install dependencies
+RUN flutter doctor -v
+RUN flutter pub get
+RUN flutter clean
+RUN flutter build web
+
+# Use Nginx to serve the built web app
+FROM nginx:alpine
+
+# Copy the built web files from the Flutter build stage
+COPY --from=build /app/build/web /usr/share/nginx/html
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
